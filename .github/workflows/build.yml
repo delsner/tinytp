@@ -19,7 +19,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-22.04, windows-2022, macos-12 ]
+        os: [ ubuntu-22.04, windows-2019, macos-12 ]
     defaults:
       run:
         shell: bash -l {0}
@@ -30,7 +30,7 @@ jobs:
 
       - name: Configure
         run: |
-          cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Debug
+          cmake -DCMAKE_BUILD_TYPE=Debug -S. -Bbuild
 
       - name: Build
         run: |
