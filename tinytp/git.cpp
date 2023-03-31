@@ -1,9 +1,7 @@
 #include <tinytp/git.h>
 
-namespace tinytp {
-    namespace git {
-        bool diff() {
-            return true;
-        }
+namespace tinytp::git {
+    bool diff() {
+        return true;
     }
 }

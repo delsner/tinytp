@@ -4,8 +4,8 @@ project(TinyTP LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_subdirectory(test)
+add_subdirectory(tinytp)
 
 enable_testing()
+add_subdirectory(test)
 
-add_subdirectory(tinytp)
