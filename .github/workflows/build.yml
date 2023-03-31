@@ -38,6 +38,5 @@ jobs:
 
       - name: Test
         run: |
-          cd build
-          ctest -C Debug --output-on-failure --verbose
-      
+          ./build/test/tinytp_unittests
+          
