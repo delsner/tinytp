@@ -1,2 +1,5 @@
-# tinytp
-TinyTP is a tiny program for test prioritization
+# TinyTP
+
+TinyTP is a tiny program for test prioritization.
+
+
