@@ -1,3 +1,5 @@
+include_directories(../external/include)
+
 add_library(tinytp_lib git.cpp db.cpp)
 target_include_directories(tinytp_lib PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/../include)
