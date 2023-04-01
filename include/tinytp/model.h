@@ -13,7 +13,7 @@ namespace tinytp {
     struct TestExecution {
         std::string testId;
         uint16_t failures = 0;
-        uint64_t timestamp = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+        uint64_t timestamp = static_cast<::uint64_t>(duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count());
         std::optional<std::string> path;
     };
 }
