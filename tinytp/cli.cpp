@@ -32,7 +32,7 @@ namespace tinytp {
     template<typename T>
     void checkFlag(
             const std::string &flag,
-            const std::vector<const std::string_view> &args,
+            const std::vector<std::string_view> &args,
             size_t &idx,
             T &dst) {
         const auto arg = args[idx];
@@ -45,7 +45,7 @@ namespace tinytp {
     template<>
     void checkFlag(
             const std::string &flag,
-            const std::vector<const std::string_view> &args,
+            const std::vector<std::string_view> &args,
             size_t &idx,
             bool &dst) {
         const auto arg = args[idx];
@@ -59,7 +59,7 @@ namespace tinytp {
             throw std::runtime_error("invalid number of command line arguments");
         }
 
-        const std::vector<const std::string_view> args(argv + 1, argv + argc);
+        const std::vector<std::string_view> args(argv + 1, argv + argc);
         bool inCollectMode = false;
         fs::path dbDir = fs::current_path();
         fs::path outputDir = fs::current_path();
