@@ -1,7 +1,7 @@
 #ifndef TINYTP_GIT_H
 #define TINYTP_GIT_H
 
-namespace tinytp::git {
+namespace tinytp {
     bool diff();
 }
 

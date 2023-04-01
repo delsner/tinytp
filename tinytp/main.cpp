@@ -1,7 +1,14 @@
-#include <iostream>
-#include <tinytp/git.h>
+#include <tinytp/cli.h>
 
-int main(int argc, char* argv[]) {
-    std::cout << "Hello=" << tinytp::git::diff() << "\n" << std::endl;
-    return 0;
+using namespace tinytp;
+
+int main(int argc, char *argv[]) {
+    std::unique_ptr<TinyTPRunner> runner;
+    try {
+        runner = parse(argc, argv);
+    } catch (const std::exception &x) {
+        printHelpMessage(x.what());
+        return 1;
+    }
+    return runner->run();
 }

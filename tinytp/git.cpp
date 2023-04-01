@@ -1,6 +1,6 @@
 #include <tinytp/git.h>
 
-namespace tinytp::git {
+namespace tinytp {
     bool diff() {
         return true;
     }
