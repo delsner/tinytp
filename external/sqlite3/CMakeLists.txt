@@ -10,4 +10,4 @@ add_definitions(-DSQLITE_ENABLE_JSON1)
 add_definitions(-DSQLITE_ENABLE_RBU)
 add_definitions(-DSQLITE_ENABLE_STAT4)
 
-target_include_directories(sqlite3_static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include/sqlite3/sqlite3.h)
+target_include_directories(sqlite3_static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include/sqlite3)
