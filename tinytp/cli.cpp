@@ -1,33 +1,16 @@
 #include <tinytp/cli.h>
+#include <tinytp/runner.h>
+#include <tinytp/collect.h>
+#include <tinytp/prio.h>
+
 #include <iostream>
+#include <utility>
 #include <vector>
 #include <filesystem>
 
 namespace fs = std::filesystem;
 
 namespace tinytp {
-
-    struct TinyTPPrio : public TinyTPRunner {
-        TinyTPPrio(const std::filesystem::path &outputDir,
-                   const std::filesystem::path &dbDir) : TinyTPRunner(outputDir,
-                                                                      dbDir) {}
-
-        int run() override {
-            std::cout << "Prio" << std::endl;
-            return 0;
-        }
-    };
-
-    struct TinyTPCollector : public TinyTPRunner {
-        TinyTPCollector(const std::filesystem::path &outputDir,
-                        const std::filesystem::path &dbDir) : TinyTPRunner(
-                outputDir, dbDir) {}
-
-        int run() override {
-            std::cout << "Collect" << std::endl;
-            return 0;
-        }
-    };
 
     template<typename T>
     void checkFlag(
@@ -61,10 +44,11 @@ namespace tinytp {
 
         const std::vector<std::string_view> args(argv + 1, argv + argc);
         bool inCollectMode = false;
-        fs::path dbDir = fs::current_path();
+        std::string dbConnection = fs::current_path() / "tinytp.db";
         fs::path outputDir = fs::current_path();
-        fs::path gitDir = fs::current_path();
-        bool useJUnit = false;
+        fs::path changesetFile = fs::current_path() / "changeset.txt";
+        fs::path junitReportDir = fs::current_path();
+        bool printPrio = false;
 
         for (size_t idx = 0; idx < args.size(); ++idx) {
             const auto arg = args[idx];
@@ -78,16 +62,17 @@ namespace tinytp {
                 }
                 throw std::runtime_error("invalid mode: " + std::string(arg));
             }
-            checkFlag<fs::path>("--db", args, idx, dbDir);
+            checkFlag<std::string>("--db", args, idx, dbConnection);
             checkFlag<fs::path>("--output", args, idx, outputDir);
-            checkFlag<fs::path>("--git", args, idx, gitDir);
-            checkFlag<bool>("--junit", args, idx, useJUnit);
+            checkFlag<fs::path>("--changes", args, idx, changesetFile);
+            checkFlag<fs::path>("--junit", args, idx, junitReportDir);
+            checkFlag<bool>("--print", args, idx, printPrio);
         }
 
         if (inCollectMode) {
-            return std::make_unique<TinyTPCollector>(TinyTPCollector{outputDir, dbDir});
+            return std::make_unique<TinyTPCollector>(TinyTPCollector{dbConnection, junitReportDir});
         }
-        return std::make_unique<TinyTPPrio>(TinyTPPrio{outputDir, dbDir});
+        return std::make_unique<TinyTPPrio>(TinyTPPrio{dbConnection, outputDir, changesetFile});
     }
 
     void printHelpMessage(const char *message) {
@@ -95,9 +80,11 @@ namespace tinytp {
         std::cerr << "Usage: tinytp [OPTIONS] COMMAND\n\n";
         std::cerr << "A simple test prioritization tool.\n\n";
         std::cerr << "Options:\n";
-        std::cerr << "\t--db string \t\tDirectory where to look for TinyTP database (default: current)\n";
+        std::cerr << "\t--db string \t\tPath to TinyTP database (default: tinytp.db)\n";
         std::cerr << "\t--output string\t\tDirectory where to put any output (except database) (default: current)\n";
-        std::cerr << "\t--git string\t\tRoot of git repository (default: current)\n";
+        std::cerr << "\t--changes string\t\tPath to file containing files in changeset (default: changeset.txt)\n";
+        std::cerr << "\t--junit string\t\tDirectory where to look for junit XML reports (default: current)\n";
+        std::cerr << "\t--print string\t\tPrint prioritized tests to standard output\n";
         std::cerr << '\n';
         std::cerr << "Commands:\n";
         std::cerr << "\tcollect\t\tCollect data and store into TinyTP database\n";

@@ -1,7 +1,7 @@
 include(../cmake/googletest.cmake)
 
 # create binary for test execution
-add_executable(tinytp_unittests main.cpp test_git.cpp test_db.cpp)
+add_executable(tinytp_unittests main.cpp test_db.cpp test_report_parser.cpp)
 
 # link gtest as static library
 target_link_libraries(tinytp_unittests

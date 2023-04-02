@@ -1,4 +1,5 @@
 #include <tinytp/cli.h>
+#include <tinytp/runner.h>
 
 using namespace tinytp;
 

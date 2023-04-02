@@ -9,13 +9,21 @@ namespace tinytp {
 
     using namespace std::chrono;
 
-    /// Represents a test at arbitrary granularity level (e.g., test executable, test suite, test case).
-    struct TestExecution {
-        std::string testId;
-        uint16_t failures = 0;
-        uint64_t timestamp = static_cast<::uint64_t>(duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count());
-        std::optional<std::string> path;
+    struct TestSuiteExecution {
+        uint64_t id;
+        std::string testSuiteName;
+        std::string testModuleName;
+        uint16_t failedCases = 0;
+        uint16_t totalCases = 0;
+        uint64_t timestamp = static_cast<uint64_t>(duration_cast<milliseconds>(
+                system_clock::now().time_since_epoch()).count());
+        double duration;
+
+        static constexpr const char * sqlCreateTable() {
+            return "create table ()";
+        }
     };
+
 }
 
 #endif //TINYTP_MODEL_H

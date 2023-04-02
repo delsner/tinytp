@@ -1,3 +1,13 @@
 #include <tinytp/prio.h>
 
-// TODO
+namespace tinytp {
+    int TinyTPPrio::run() {
+        return 0;
+    }
+
+    std::vector<std::string> HistoryPathDurationTP::prioritize() {
+        return {};
+    }
+
+}
+
