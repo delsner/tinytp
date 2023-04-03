@@ -45,6 +45,7 @@ namespace tinytp {
         if (db) {
             sqlite3_close(db);
             db = nullptr;
+            errMsg = nullptr;
         }
     }
 }

@@ -47,7 +47,7 @@ namespace tinytp {
         std::string dbConnection = fs::current_path() / "tinytp.db";
         fs::path outputDir = fs::current_path();
         fs::path changesetFile = fs::current_path() / "changeset.txt";
-        fs::path junitReportDir = fs::current_path();
+        fs::path jenkinsReport = fs::current_path() / "test-report.json";
         bool printPrio = false;
 
         for (size_t idx = 0; idx < args.size(); ++idx) {
@@ -65,12 +65,12 @@ namespace tinytp {
             checkFlag<std::string>("--db", args, idx, dbConnection);
             checkFlag<fs::path>("--output", args, idx, outputDir);
             checkFlag<fs::path>("--changes", args, idx, changesetFile);
-            checkFlag<fs::path>("--junit", args, idx, junitReportDir);
+            checkFlag<fs::path>("--jenkins", args, idx, jenkinsReport);
             checkFlag<bool>("--print", args, idx, printPrio);
         }
 
         if (inCollectMode) {
-            return std::make_unique<TinyTPCollector>(TinyTPCollector{dbConnection, junitReportDir});
+            return std::make_unique<TinyTPCollector>(TinyTPCollector{dbConnection, jenkinsReport});
         }
         return std::make_unique<TinyTPPrio>(TinyTPPrio{dbConnection, outputDir, changesetFile});
     }
@@ -83,7 +83,7 @@ namespace tinytp {
         std::cerr << "\t--db string \t\tPath to TinyTP database (default: tinytp.db)\n";
         std::cerr << "\t--output string\t\tDirectory where to put any output (except database) (default: current)\n";
         std::cerr << "\t--changes string\t\tPath to file containing files in changeset (default: changeset.txt)\n";
-        std::cerr << "\t--junit string\t\tDirectory where to look for junit XML reports (default: current)\n";
+        std::cerr << "\t--jenkins string\t\tPath to Jenkins JSON report (default: test-report.json)\n";
         std::cerr << "\t--print string\t\tPrint prioritized tests to standard output\n";
         std::cerr << '\n';
         std::cerr << "Commands:\n";

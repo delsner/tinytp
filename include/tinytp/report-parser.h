@@ -14,9 +14,9 @@ namespace tinytp {
         virtual std::vector<TestSuiteExecution> parse() = 0;
     };
 
-    class JUnitParser : public BaseReportParser {
+    class JenkinsJsonReportParser : public BaseReportParser {
     public:
-        explicit JUnitParser(fs::path reportPath) : reportPath(std::move(reportPath)) {}
+        explicit JenkinsJsonReportParser(fs::path reportPath) : reportPath(std::move(reportPath)) {}
 
         std::vector<TestSuiteExecution> parse() override;
 

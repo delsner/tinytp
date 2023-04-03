@@ -1,22 +1,8 @@
-#include <tinytp/db.h>
+#include <tinytp/collect.h>
 #include <gtest/gtest.h>
 
+using namespace testing;
 using namespace tinytp;
-
-namespace {
-    const char *filename = ":memory:";
-    const char *createTableSql = "CREATE TABLE PERSON("
-                                 "ID INTEGER PRIMARY KEY,"
-                                 "NAME           TEXT    NOT NULL,"
-                                 "AGE            INTEGER     NOT NULL,"
-                                 "ADDRESS        CHAR(50),"
-                                 "SALARY         REAL );";
-    const char *insertSql = "INSERT INTO PERSON "
-                            "(NAME,AGE,ADDRESS,SALARY) "
-                            "VALUES "
-                            "('Allen', 25, 'Texas', 1500.00),"
-                            "('Teddy', 23, 'Norway', 2000.00);";
-}
 
 TEST(DBTestSuite, Connect) {
     SQLiteDB db(filename);

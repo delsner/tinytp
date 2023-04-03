@@ -2,7 +2,6 @@
 #define TINYTP_MODEL_H
 
 #include <string>
-#include <optional>
 #include <chrono>
 
 namespace tinytp {
@@ -19,8 +18,27 @@ namespace tinytp {
                 system_clock::now().time_since_epoch()).count());
         double duration;
 
-        static constexpr const char * sqlCreateTable() {
-            return "create table ()";
+        static constexpr const char *tableName = "TEST_SUITE_EXECUTION";
+        static constexpr const char *columns = "(ID,TEST_SUITE_NAME,TEST_MODULE_NAME,FAILED,TOTAL,TIMESTAMP,DURATION)";
+
+        static constexpr const char *sqlCreateTable() {
+            return "CREATE TABLE IF NOT EXISTS TEST_SUITE_EXECUTION ("
+                   "ID                  INT PRIMARY KEY     NOT NULL,"
+                   "TEST_SUITE_NAME     TEXT                NOT NULL,"
+                   "TEST_MODULE_NAME    TEXT                NOT NULL,"
+                   "FAILED              INT                 NOT NULL,"
+                   "TOTAL               INT                 NOT NULL,"
+                   "TIMESTAMP           INT                 NOT NULL,"
+                   "DURATION            REAL                NOT NULL);";
+        }
+
+        bool operator==(const TestSuiteExecution &rhs) const {
+            return id == rhs.id &&
+                   testSuiteName == rhs.testSuiteName;
+        }
+
+        bool operator!=(const TestSuiteExecution &rhs) const {
+            return !(rhs == *this);
         }
     };
 

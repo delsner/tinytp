@@ -4,7 +4,6 @@
 #include <sqlite3/sqlite3.h>
 #include <string>
 #include <utility>
-#include <iostream>
 
 namespace tinytp {
     class SQLiteDB {
@@ -12,12 +11,13 @@ namespace tinytp {
 
         class Row {
         public:
-            explicit Row(sqlite3_stmt *stmt) : stmt(stmt), index(0) {}
+            explicit Row(sqlite3_stmt *stmt) : stmt(stmt), index(0) {
+                columns = sqlite3_column_count(stmt);
+            }
 
             template<typename T>
             T get() {
                 T value;
-                // Currently, we only support int, double, and text columns.
                 if constexpr (std::is_same_v<T, int>) {
                     value = sqlite3_column_int(stmt, index);
                 } else if constexpr (std::is_same_v<T, double>) {
@@ -27,7 +27,7 @@ namespace tinytp {
                 } else {
                     static_assert(sizeof(T) == 0, "Unsupported type");
                 }
-                ++index;
+                index = (index + 1) % columns;
                 return value;
             }
 
@@ -38,6 +38,7 @@ namespace tinytp {
         private:
             sqlite3_stmt *stmt;
             int index;
+            int columns;
         };
 
         explicit SQLiteDB(std::string filename) : filename(std::move(filename)) {
@@ -65,7 +66,7 @@ namespace tinytp {
         }
 
         const char *getError() const {
-            return const_cast<const char*>(errMsg);
+            return const_cast<const char *>(errMsg);
         }
 
     private:

@@ -1,49 +1,64 @@
 #include <gtest/gtest.h>
-#include <tinytp/report-parser.h>
+#include <gmock/gmock.h>
 #include <filesystem>
 #include <string>
 
+#include <tinytp/util.h>
+#include <tinytp/report-parser.h>
+
+using namespace testing;
 using namespace tinytp;
 
 namespace fs = std::filesystem;
 
-namespace {
-
-    fs::path writeToTemporaryFile(const std::string &content) {
-        // TODO
-        return "";
+class JUnitReportParserTestSuite : public Test {
+protected:
+    void SetUp() override {
+        tempFile = fs::temp_directory_path() / "test-report.json";
+        if (fs::exists(tempFile)) {
+            fs::remove(tempFile);
+        }
     }
 
-
-    bool equalTestExecutions(const std::vector<TestSuiteExecution> &vec1, const std::vector<TestSuiteExecution> &vec2) {
-        return true;
+    void TearDown() override {
+        if (fs::exists(tempFile)) {
+            fs::remove(tempFile);
+        }
     }
-}
 
-TEST(JUnitReportParserTestSuite, ParseSingleSuite) {
-    auto reportPath = writeToTemporaryFile(
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \n"
-            "   <testsuites id=\"Run\" name=\"My Test\" tests=\"2\" failures=\"1\" time=\"0.010\">\n"
-            "      <testsuite id=\"foo.bar.Suite1\" name=\"Suite1\" tests=\"2\" failures=\"1\" time=\"0.010\">\n"
-            "         <testcase id=\"foo.bar.Suite1.Case1\" name=\"Case1\" time=\"0.08\">\n"
-            "            <failure message=\"...\" type=\"WARNING\" />\n"
-            "         </testcase>\n"
-            "         <testcase id=\"foo.bar.Suite1.Case2\" name=\"Case2\" time=\"0.02\" />\n"
-            "       </testsuite>\n"
-            "   </testsuites>");
-    auto parser = JUnitParser(reportPath);
-    auto expected = std::vector<TestSuiteExecution>{
-            TestSuiteExecution{
-                    0,
-                    "foo.bar.Suite1",
-                    "foo.bar",
-                    1,
-                    2,
-                    123,
-                    0.08
-            }
-    };
+    fs::path tempFile;
+};
 
+TEST_F(JUnitReportParserTestSuite, ParseSingleSuite) {
+    auto reportPath = IO::writeFile("{"
+                                    "    \"suites\": ["
+                                    "        {"
+                                    "            \"duration\": 0.08,"
+                                    "            \"name\": \"foo.bar.Suite1\","
+                                    "            \"cases\": ["
+                                    "                    {"
+                                    "                        \"name\": \"Case1\","
+                                    "                        \"status\": \"FAILED\","
+                                    "                        \"duration\": 0.01"
+                                    "                    },"
+                                    "                    {"
+                                    "                        \"name\": \"Case2\","
+                                    "                        \"status\": \"PASSED\","
+                                    "                        \"duration\": 0.07"
+                                    "                    }"
+                                    "            ]"
+                                    "        }"
+                                    "    ]"
+                                    "}", tempFile);
+    auto parser = JenkinsJsonReportParser(reportPath);
     auto actual = parser.parse();
-    ASSERT_TRUE(equalTestExecutions(actual, expected));
+    ASSERT_THAT(actual, ElementsAre(TestSuiteExecution{
+            0,
+            "foo.bar.Suite1",
+            "foo.bar",
+            1,
+            2,
+            123,
+            0.08
+    }));
 }
