@@ -33,8 +33,7 @@ namespace tinytp {
         }
         sqlite3_stmt* stmt;
         int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
-        if (rc != SQLITE_OK)
-        {
+        if (rc != SQLITE_OK) {
             errMsg = const_cast<char*>(sqlite3_errmsg(db));
             return Row(nullptr);
         }
