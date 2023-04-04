@@ -1,20 +1,16 @@
 #include <tinytp/report-parser.h>
 #include <tinytp/util.h>
 #include <json/json.hpp>
-#include <fstream>
-#include <sstream>
 
 using json = nlohmann::json;
 
 namespace tinytp {
     std::vector<TestSuiteExecution> JenkinsJsonReportParser::parse() {
-        std::ifstream file(reportPath);
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-        std::string jsonString = buffer.str();
-
-        auto root = json::parse(jsonString);
         std::vector<TestSuiteExecution> executions;
+        
+        std::string jsonString = IO::readFile(reportPath);
+        auto root = json::parse(jsonString);
+        
         if (root.contains("suites") && root["suites"].is_array()) {
             for (const auto &testSuite: root["suites"]) {
                 std::string testSuiteName = testSuite["name"].get<std::string>();
