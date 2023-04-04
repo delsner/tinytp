@@ -6,15 +6,18 @@
 #include <vector>
 #include <tinytp/model.h>
 
-namespace tinytp {
-    namespace fs = std::filesystem;
+namespace fs = std::filesystem;
 
-    class BaseReportParser {
+namespace tinytp {
+
+    class ReportParser {
     public:
+        virtual ~ReportParser() = default;
+
         virtual std::vector<TestSuiteExecution> parse() = 0;
     };
 
-    class JenkinsJsonReportParser : public BaseReportParser {
+    class JenkinsJsonReportParser : public ReportParser {
     public:
         explicit JenkinsJsonReportParser(fs::path reportPath) : reportPath(std::move(reportPath)) {}
 

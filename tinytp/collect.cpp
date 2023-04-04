@@ -3,12 +3,10 @@
 
 #include <tinytp/collect.h>
 #include <tinytp/db.h>
-#include <tinytp/model.h>
 
 namespace tinytp {
     int TinyTPCollector::run() {
-        auto parser = JenkinsJsonReportParser(jenkinsReport);
-        auto testSuiteExecutions = parser.parse();
+        auto testSuiteExecutions = parser->parse();
         if (!testSuiteExecutions.empty()) {
             SQLiteDB db(dbConnection);
             db.execute(TestSuiteExecution::sqlCreateTable());
@@ -20,7 +18,7 @@ namespace tinytp {
             sql << "INSERT INTO " << TestSuiteExecution::tableName << TestSuiteExecution::columns << " VALUES ";
             for (size_t i = 0; i < testSuiteExecutions.size(); ++i) {
                 auto testSuite = testSuiteExecutions[i];
-                sql << "(,"
+                sql << "("
                     << "'" << testSuite.testSuiteName << "'" << ","
                     << "'" << testSuite.testModuleName << "'" << ","
                     << testSuite.failedCases << ","

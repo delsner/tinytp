@@ -4,17 +4,18 @@
 #include <tinytp/runner.h>
 #include <tinytp/report-parser.h>
 #include <utility>
+#include <memory>
 
 namespace tinytp {
     class TinyTPCollector : public TinyTPRunner {
     public:
-        explicit TinyTPCollector(const std::string &dbConnection, fs::path jenkinsReport)
-                : TinyTPRunner(dbConnection), jenkinsReport(std::move(jenkinsReport)) {}
+        explicit TinyTPCollector(const std::string &dbConnection, std::unique_ptr<ReportParser> &parser)
+                : TinyTPRunner(dbConnection), parser(std::move(parser)) {}
 
         int run() override;
 
     private:
-        fs::path jenkinsReport;
+        std::unique_ptr<ReportParser> parser;
     };
 }
 

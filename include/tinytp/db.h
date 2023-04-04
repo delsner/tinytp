@@ -31,7 +31,8 @@ namespace tinytp {
                 return value;
             }
 
-            bool hasNext() const {
+            bool hasNext() {
+                index = 0;
                 return sqlite3_step(stmt) == SQLITE_ROW;
             }
 

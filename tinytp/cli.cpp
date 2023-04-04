@@ -2,6 +2,7 @@
 #include <tinytp/runner.h>
 #include <tinytp/collect.h>
 #include <tinytp/prio.h>
+#include <tinytp/report-parser.h>
 
 #include <iostream>
 #include <utility>
@@ -70,8 +71,15 @@ namespace tinytp {
         }
 
         if (inCollectMode) {
-            return std::make_unique<TinyTPCollector>(TinyTPCollector{dbConnection, jenkinsReport});
+            std::unique_ptr<ReportParser> parser;
+            if (!jenkinsReport.empty() && fs::exists(jenkinsReport)) {
+                parser = std::make_unique<JenkinsJsonReportParser>(jenkinsReport);
+            } else {
+                throw std::runtime_error("invalid test report provided to collect from");
+            }
+            return std::make_unique<TinyTPCollector>(TinyTPCollector{dbConnection, parser});
         }
+
         return std::make_unique<TinyTPPrio>(TinyTPPrio{dbConnection, outputDir, changesetFile});
     }
 
