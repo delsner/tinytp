@@ -7,6 +7,7 @@
 using json = nlohmann::json;
 
 namespace tinytp {
+
     std::vector<TestSuiteExecution> JenkinsJsonReportParser::parse() {
         std::ifstream file(reportPath);
         std::stringstream buffer;
@@ -49,4 +50,5 @@ namespace tinytp {
         }
         return executions;
     }
+
 }

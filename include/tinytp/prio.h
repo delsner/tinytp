@@ -2,20 +2,27 @@
 #define TINYTP_PRIO_H
 
 #include <tinytp/runner.h>
+#include <tinytp/db.h>
 
 #include <string>
+#include <utility>
 #include <vector>
 #include <filesystem>
 #include <utility>
 
+namespace fs = std::filesystem;
+
 namespace tinytp {
 
-    namespace fs = std::filesystem;
+    enum class PrioGranularity {
+        SUITE, MODULE
+    };
 
     class TinyTPPrio : public TinyTPRunner {
     public:
-        explicit TinyTPPrio(const std::string &dbConnection, fs::path outputDir, fs::path changesetFile)
-                : TinyTPRunner(dbConnection), outputDir(std::move(outputDir)),
+        explicit TinyTPPrio(const SQLiteDB &db, fs::path outputDir, fs::path changesetFile,
+                            const PrioGranularity granularity)
+                : TinyTPRunner(db), outputDir(std::move(outputDir)), granularity(granularity),
                   changesetFile(std::move(changesetFile)) {}
 
         int run() override;
@@ -23,35 +30,38 @@ namespace tinytp {
     private:
         fs::path changesetFile;
         fs::path outputDir;
+        PrioGranularity granularity;
     };
 
-    enum class PrioGranularity {
-        SUITE, MODULE
+    struct PrioritizedTest {
+        std::string id;
+        double score;
     };
 
     class BaseTP {
     public:
-        explicit BaseTP(PrioGranularity granularity) : granularity(granularity) {}
+        explicit BaseTP(const PrioGranularity granularity, const SQLiteDB &db) : granularity(granularity), db(db) {}
 
         /// Returns prioritized list of test entities (test suite or module).
-        virtual std::vector<std::string> prioritize() = 0;
+        virtual std::vector<PrioritizedTest> prioritize() = 0;
 
     protected:
         PrioGranularity granularity;
-        std::string dbConnection;
+        SQLiteDB db;
     };
 
     /// This algorithm computes the prioritization using the formula:
     /// Score = (rel. failure freq. * max. path similarity) / duration
     class HistoryPathDurationTP : public BaseTP {
     public:
-        HistoryPathDurationTP(PrioGranularity granularity, const std::vector<std::string> &changedPaths) : BaseTP(
-                granularity), changedPaths(changedPaths) {}
+        HistoryPathDurationTP(const PrioGranularity granularity, const SQLiteDB &db,
+                              std::vector<std::string> &changedPaths) : BaseTP(
+                granularity, db), changedPaths(changedPaths) {}
 
-        std::vector<std::string> prioritize() override;
+        std::vector<PrioritizedTest> prioritize() override;
 
     private:
-        const std::vector<std::string> changedPaths;
+        std::vector<fs::path> changedPaths;
     };
 }
 

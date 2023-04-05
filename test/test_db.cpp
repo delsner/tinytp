@@ -20,6 +20,8 @@ namespace {
 
 TEST(DBTestSuite, Connect) {
     SQLiteDB db(filename);
+    ASSERT_FALSE(db.isConnected());
+    db.connect();
     ASSERT_TRUE(db.isConnected());
     db.disconnect();
     ASSERT_FALSE(db.isConnected());
@@ -27,6 +29,7 @@ TEST(DBTestSuite, Connect) {
 
 TEST(DBTestSuite, Execute) {
     SQLiteDB db(filename);
+    db.connect();
     ASSERT_TRUE(db.execute(createTableSql));
     ASSERT_FALSE(db.hasError());
     ASSERT_FALSE(db.select("SELECT * FROM PERSON;").hasNext());
@@ -34,12 +37,14 @@ TEST(DBTestSuite, Execute) {
 
 TEST(DBTestSuite, ExecuteWithError) {
     SQLiteDB db(filename);
+    db.connect();
     ASSERT_FALSE(db.execute("CREATED TABLE PERSON();"));
     ASSERT_TRUE(db.hasError());
 }
 
 TEST(DBTestSuite, InsertAndQuery) {
     SQLiteDB db(filename);
+    db.connect();
     ASSERT_TRUE(db.execute(createTableSql));
     ASSERT_TRUE(db.execute(insertSql));
     ASSERT_TRUE(db.select("SELECT * FROM PERSON;").hasNext());
@@ -47,6 +52,7 @@ TEST(DBTestSuite, InsertAndQuery) {
 
 TEST(DBTestSuite, ConvertRowsToFields) {
     SQLiteDB db(filename);
+    db.connect();
     ASSERT_TRUE(db.execute(createTableSql));
     ASSERT_TRUE(db.execute(insertSql));
     auto row = db.select("SELECT * FROM PERSON;");

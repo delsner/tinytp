@@ -424,3 +424,7 @@ dkms.conf
 
 # Jetbrains
 .idea
+
+# custom
+test-report.json
+tinytp.db

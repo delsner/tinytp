@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include <filesystem>
 #include <utility>
 #include <tinytp/collect.h>
 #include <tinytp/report-parser.h>
@@ -8,8 +7,6 @@
 
 using namespace ::testing;
 using namespace tinytp;
-
-namespace fs = std::filesystem;
 
 class MockParser : public ReportParser {
 public:
@@ -42,6 +39,6 @@ TEST(CollectorTestSuite, SimpleAdd) {
             }));
     // Convert to base parser type
     std::unique_ptr<ReportParser> parserBase = std::unique_ptr<MockParser>(parser.release());
-    auto collector = TinyTPCollector(":memory:", parserBase);
+    auto collector = TinyTPCollector(SQLiteDB(":memory:"), parserBase);
     ASSERT_EQ(collector.run(), 0);
 }

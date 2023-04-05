@@ -43,14 +43,13 @@ namespace tinytp {
         };
 
         explicit SQLiteDB(std::string filename) : filename(std::move(filename)) {
-            connect();
         }
 
         virtual ~SQLiteDB() {
             disconnect();
         }
 
-        bool connect();
+        bool connect() noexcept;
 
         bool execute(const std::string &sql);
 
@@ -58,15 +57,15 @@ namespace tinytp {
 
         void disconnect() noexcept;
 
-        bool isConnected() const {
+        [[nodiscard]] bool isConnected() const {
             return db;
         }
 
-        bool hasError() const {
+        [[nodiscard]] bool hasError() const {
             return errMsg != nullptr;
         }
 
-        const char *getError() const {
+        [[nodiscard]] const char *getError() const {
             return const_cast<const char *>(errMsg);
         }
 

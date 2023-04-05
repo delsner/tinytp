@@ -2,6 +2,7 @@
 #include <tinytp/runner.h>
 #include <tinytp/collect.h>
 #include <tinytp/prio.h>
+#include <tinytp/db.h>
 #include <tinytp/report-parser.h>
 
 #include <iostream>
@@ -14,7 +15,7 @@ namespace fs = std::filesystem;
 namespace tinytp {
 
     template<typename T>
-    void checkFlag(
+    void parseFlag(
             const std::string &flag,
             const std::vector<std::string_view> &args,
             size_t &idx,
@@ -27,7 +28,7 @@ namespace tinytp {
     };
 
     template<>
-    void checkFlag(
+    void parseFlag(
             const std::string &flag,
             const std::vector<std::string_view> &args,
             size_t &idx,
@@ -44,12 +45,13 @@ namespace tinytp {
         }
 
         const std::vector<std::string_view> args(argv + 1, argv + argc);
+
         bool inCollectMode = false;
-        std::string dbConnection = fs::current_path() / "tinytp.db";
+        fs::path dbFile = fs::current_path() / "tinytp.db";
         fs::path outputDir = fs::current_path();
         fs::path changesetFile = fs::current_path() / "changeset.txt";
         fs::path jenkinsReport = fs::current_path() / "test-report.json";
-        bool printPrio = false;
+        bool modulePrio = false;
 
         for (size_t idx = 0; idx < args.size(); ++idx) {
             const auto arg = args[idx];
@@ -63,12 +65,18 @@ namespace tinytp {
                 }
                 throw std::runtime_error("invalid mode: " + std::string(arg));
             }
-            checkFlag<std::string>("--db", args, idx, dbConnection);
-            checkFlag<fs::path>("--output", args, idx, outputDir);
-            checkFlag<fs::path>("--changes", args, idx, changesetFile);
-            checkFlag<fs::path>("--jenkins", args, idx, jenkinsReport);
-            checkFlag<bool>("--print", args, idx, printPrio);
+            parseFlag<fs::path>("--db", args, idx, dbFile);
+            parseFlag<fs::path>("--output", args, idx, outputDir);
+            parseFlag<fs::path>("--changes", args, idx, changesetFile);
+            parseFlag<fs::path>("--jenkins", args, idx, jenkinsReport);
+            parseFlag<bool>("--module", args, idx, modulePrio);
         }
+
+        if (!inCollectMode && !fs::exists(dbFile)) {
+            throw std::runtime_error("invalid database file provided at " + dbFile.string());
+        }
+
+        SQLiteDB db(dbFile);
 
         if (inCollectMode) {
             std::unique_ptr<ReportParser> parser;
@@ -77,10 +85,11 @@ namespace tinytp {
             } else {
                 throw std::runtime_error("invalid test report provided to collect from");
             }
-            return std::make_unique<TinyTPCollector>(TinyTPCollector{dbConnection, parser});
+            return std::make_unique<TinyTPCollector>(TinyTPCollector{db, parser});
         }
 
-        return std::make_unique<TinyTPPrio>(TinyTPPrio{dbConnection, outputDir, changesetFile});
+        return std::make_unique<TinyTPPrio>(TinyTPPrio{db, outputDir, changesetFile,
+                                                       modulePrio ? PrioGranularity::MODULE : PrioGranularity::SUITE});
     }
 
     void printHelpMessage(const char *message) {

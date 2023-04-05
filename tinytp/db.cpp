@@ -4,7 +4,7 @@
 
 
 namespace tinytp {
-    bool SQLiteDB::connect() {
+    bool SQLiteDB::connect() noexcept {
         if (db) {
             return true;
         }
@@ -17,7 +17,7 @@ namespace tinytp {
     }
 
     bool SQLiteDB::execute(const std::string &statement) {
-        if (!db) {
+        if (!isConnected()) {
             return false;
         }
         int rc = sqlite3_exec(db, statement.c_str(), 0, 0, &errMsg);
@@ -28,7 +28,7 @@ namespace tinytp {
     }
 
     SQLiteDB::Row SQLiteDB::select(const std::string& sql) {
-        if (!db) {
+        if (!isConnected()) {
             return Row(nullptr);
         }
         sqlite3_stmt* stmt;

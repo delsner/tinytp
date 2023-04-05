@@ -8,7 +8,7 @@ namespace tinytp {
     int TinyTPCollector::run() {
         auto testSuiteExecutions = parser->parse();
         if (!testSuiteExecutions.empty()) {
-            SQLiteDB db(dbConnection);
+            db.connect();
             db.execute(TestSuiteExecution::sqlCreateTable());
             if (db.hasError()) {
                 std::cerr << "Unable to initialize database: " << db.getError() << std::endl;

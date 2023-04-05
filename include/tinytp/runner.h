@@ -5,20 +5,20 @@
 #include <string>
 #include <utility>
 
-namespace tinytp {
-    namespace fs = std::filesystem;
+#include <tinytp/db.h>
 
+namespace tinytp {
     /// Base interface for runners that can be configured using CLI parameters.
     class TinyTPRunner {
     public:
-        explicit TinyTPRunner(std::string dbConnection) : dbConnection(std::move(dbConnection)) {};
+        explicit TinyTPRunner(const SQLiteDB& db) : db(db) {};
 
         virtual ~TinyTPRunner() = default;
 
         virtual int run() = 0;
 
     protected:
-        std::string dbConnection;
+        SQLiteDB db;
     };
 }
 #endif //TINYTP_RUNNER_H
