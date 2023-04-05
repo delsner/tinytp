@@ -1,7 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <algorithm>
-#include <climits>
+#include <limits>
 
 #include <tinytp/prio.h>
 #include <tinytp/util.h>
@@ -9,7 +9,7 @@
 namespace {
     /// Simple similarity function to compute min distance between test and each changed path.
     double maxPathSimilarity(const std::string &testName, std::vector<std::string> &changedPaths) {
-        int minPathDistance = INT_MAX;
+        int minPathDistance = std::numeric_limits<int>::max();
         for (const auto &path: changedPaths) {
             auto distance = tinytp::string::levenshtein(testName, path);
             minPathDistance = std::min(minPathDistance, distance);
