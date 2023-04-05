@@ -38,7 +38,7 @@ namespace tinytp {
         for (const auto &test: prioritizedTests) {
             output << test.id << "," << test.score << "\n";
         }
-        IO::writeFile(outputDir / "tinytp.prio", output.str());
+        IO::writeFile(output.str(), outputDir / "tinytp.prio");
         return 0;
     }
 

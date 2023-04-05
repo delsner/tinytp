@@ -31,7 +31,8 @@ namespace tinytp {
         int levenshtein(const std::string &str1, const std::string &str2) {
             int size1 = static_cast<int>(str1.size());
             int size2 = static_cast<int>(str2.size());
-            int matrix[size1 + 1][size2 + 1];
+            auto matrix = std::vector<std::vector<int>>(size1 + 1, std::vector<int>(size2 + 1, 0));
+
             // If one of the words has zero length, the distance is equal to the size of the other word.
             if (size1 == 0)
                 return size2;

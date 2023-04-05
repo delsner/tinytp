@@ -76,7 +76,7 @@ namespace tinytp {
             throw std::runtime_error("invalid database file provided at " + dbFile.string());
         }
 
-        SQLiteDB db(dbFile);
+        SQLiteDB db(dbFile.string());
 
         if (inCollectMode) {
             std::unique_ptr<ReportParser> parser;
