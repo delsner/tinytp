@@ -28,5 +28,5 @@ protected:
 };
 
 TEST_F(PrioTestSuite, EmptyChangeset) {
-    
+
 }

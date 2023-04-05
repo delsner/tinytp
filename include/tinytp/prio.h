@@ -61,7 +61,7 @@ namespace tinytp {
         std::vector<PrioritizedTest> prioritize() override;
 
     private:
-        std::vector<fs::path> changedPaths;
+        std::vector<std::string> changedPaths;
     };
 }
 
