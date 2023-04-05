@@ -428,3 +428,5 @@ dkms.conf
 # custom
 test-report.json
 tinytp.db
+tinytp.prio
+changeset.txt

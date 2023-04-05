@@ -46,10 +46,11 @@ namespace tinytp {
         db.connect();
         std::string sql;
         if (granularity == PrioGranularity::SUITE) {
-            sql = "select test_suite_name as name, sum(failed), sum(total), avg(duration) from test_suite_execution;";
+            sql = "select test_suite_name as name, sum(failed), sum(total), avg(duration) from test_suite_execution "
+                  "group by name;";
         } else {
             sql = "select test_module_name as name, sum(failed), sum(total), avg(duration) from test_suite_execution "
-                  "group by test_module_name;";
+                  "group by name;";
         }
         auto row = db.select(sql);
         if (db.hasError()) {
@@ -72,6 +73,5 @@ namespace tinytp {
 
         return tests;
     }
-
 }
 

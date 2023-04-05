@@ -7,7 +7,7 @@ add_executable(tinytp_unittests
         test_report_parser.cpp
         test_util.cpp
         test_collect.cpp
-        test_rtp.cpp
+        test_prio.cpp
         )
 
 # link gtest as static library

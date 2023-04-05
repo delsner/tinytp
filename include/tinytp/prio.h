@@ -9,6 +9,7 @@
 #include <vector>
 #include <filesystem>
 #include <utility>
+#include <cmath>
 
 namespace fs = std::filesystem;
 
@@ -36,6 +37,14 @@ namespace tinytp {
     struct PrioritizedTest {
         std::string id;
         double score;
+
+        bool operator==(const PrioritizedTest &rhs) const {
+            return id == rhs.id;
+        }
+
+        bool operator!=(const PrioritizedTest &rhs) const {
+            return !(rhs == *this);
+        }
     };
 
     class BaseTP {
