@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 
 #include <tinytp/prio.h>
 #include <tinytp/util.h>
