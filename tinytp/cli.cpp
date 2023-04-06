@@ -52,6 +52,7 @@ namespace tinytp {
         fs::path changesetFile = fs::current_path() / "changeset.txt";
         fs::path jenkinsReport = fs::current_path() / "test-report.json";
         bool modulePrio = false;
+        bool showHelp = false;
 
         for (size_t idx = 0; idx < args.size(); ++idx) {
             const auto arg = args[idx];
@@ -70,6 +71,11 @@ namespace tinytp {
             parseFlag<fs::path>("--changes", args, idx, changesetFile);
             parseFlag<fs::path>("--jenkins", args, idx, jenkinsReport);
             parseFlag<bool>("--module", args, idx, modulePrio);
+            parseFlag<bool>("--help", args, idx, showHelp);
+        }
+
+        if (showHelp) {
+            throw std::runtime_error("help");
         }
 
         if (!inCollectMode && !fs::exists(dbFile)) {
@@ -101,7 +107,7 @@ namespace tinytp {
         std::cerr << "\t--output string\t\tDirectory where to put any output (except database) (default: current)\n";
         std::cerr << "\t--changes string\t\tPath to file containing files in changeset (default: changeset.txt)\n";
         std::cerr << "\t--jenkins string\t\tPath to Jenkins JSON report (default: test-report.json)\n";
-        std::cerr << "\t--print string\t\tPrint prioritized tests to standard output\n";
+        std::cerr << "\t--module string\t\tPrioritize at test module level\n";
         std::cerr << '\n';
         std::cerr << "Commands:\n";
         std::cerr << "\tcollect\t\tCollect data and store into TinyTP database\n";

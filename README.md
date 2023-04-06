@@ -1,5 +1,7 @@
 # TinyTP
 
+[![Coverage Status](https://coveralls.io/repos/github/delsner/tinytp/badge.svg)](https://coveralls.io/github/delsner/tinytp)
+
 TinyTP is a tiny program for test prioritization.
 
 ## Structure
