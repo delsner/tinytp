@@ -18,7 +18,7 @@ protected:
         if (fs::exists(dbFile)) {
             fs::remove(dbFile);
         }
-        SQLiteDB db(dbFile);
+        SQLiteDB db(dbFile.string());
         db.connect();
         ASSERT_TRUE(db.execute(TestSuiteExecution::sqlCreateTable()));
         ASSERT_FALSE(db.hasError());
