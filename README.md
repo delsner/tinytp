@@ -16,14 +16,108 @@ The project has the following structure:
 └── tinytp          <- TinyTP sources. 
 ```
 
+## Usage
+
+```shell
+$ tinytp --help
+tinytp: help
+
+Usage: tinytp [OPTIONS] COMMAND
+
+A simple test prioritization tool.
+
+Options:
+	--db string 		Path to TinyTP database (default: tinytp.db)
+	--output string		Directory where to put any output (except database) (default: current)
+	--changes string	Path to file containing files in changeset (default: changeset.txt)
+	--jenkins string	Path to Jenkins JSON report (default: test-report.json)
+	--module		    Prioritize at test module level
+
+Commands:
+	collect		Collect data and store into TinyTP database
+	prio		Prioritize tests
+```
+
 ## Example
 
 TinyTP provides a simple command line program that has two commands, `tinytp collect` and `tinytp prio`.
 These can be used to either (1) collect new test results and store them into the TinyTP database or (2) run a test
 prioritization algorithm.
 
+### Collecting and Storing Test Results
+
+There will be different test report parsers in the future. For now, TinyTP supports only Jenkin's JSON test report format.
+For the sake of this example, we're going to create a dummy report first:
 ```shell
-$ ...
+# Create sample Jenkins JSON test report
+$ echo '{
+    "suites": [
+        {
+            "name": "foo.bar.Suite1",
+            "duration": 0.08,
+            "cases": [
+                {
+                    "name": "Case1",
+                    "duration": 0.01,
+                    "status": "FAILED"
+                },
+                {
+                    "name": "Case2",
+                    "duration": 0.07,
+                    "status": "PASSED"
+                }
+            ]
+        },
+        {
+            "name": "foo.bar.Suite2",
+            "duration": 0.1,
+            "cases": [
+                {
+                    "name": "Case1",
+                    "duration": 0.05,
+                    "status": "FAILED"
+                },
+                {
+                    "name": "Case2",
+                    "duration": 0.05,
+                    "status": "FAILED"
+                }
+            ]
+        }
+    ]
+}' > test-report.json
+```
+
+Now we can run the `tinytp collect` command and store it into the database (default is `tinytp.db`):
+
+```shell
+$ tinytp collect --jenkins test-report.json --db tp.db
+```
+
+To check if the database content is correct, you can run the following command:
+```shell
+$ sqlite3 tp.db "select * from test_suite_execution;"
+1|foo.bar.Suite1|foo.bar|1|2|1680716088707|0.08
+2|foo.bar.Suite2|foo.bar|2|2|1680716088708|0.1
+```
+
+### Running the Prioritization
+
+To run the prioritization, you can specify the algorithm as well as the granularity (i.e., test suite or module level):
+
+```shell
+$ tinytp prio --db tp.db [--module]
+# Check created output file "tintytp.prio"
+$ cat tinytp.prio
+foo.bar.Suite2,0.666667
+foo.bar.Suite1,0.416667
+```
+
+To also incorporate the changeset (e.g., in a pull request), pass the `--changes` option:
+
+```shell
+$ git diff --name-only HEAD^1 > changeset.txt
+$ tinytp prio --db tp.db --changes changeset.txt
 ```
 
 ## Build

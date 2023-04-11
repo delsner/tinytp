@@ -39,13 +39,7 @@ namespace tinytp {
         }
     };
 
-    std::unique_ptr<TinyTPRunner> parse(int argc, char *argv[]) {
-        if (argc < 2 || argc > 64) {
-            throw std::runtime_error("invalid number of command line arguments");
-        }
-
-        const std::vector<std::string_view> args(argv + 1, argv + argc);
-
+    std::unique_ptr<TinyTPRunner> parse(const std::vector<std::string_view>& args) {
         bool inCollectMode = false;
         fs::path dbFile = fs::current_path() / "tinytp.db";
         fs::path outputDir = fs::current_path();
@@ -62,6 +56,9 @@ namespace tinytp {
                     continue;
                 } else if (arg == "prio") {
                     inCollectMode = false;
+                    continue;
+                } else if (arg == "--help") {
+                    showHelp = true;
                     continue;
                 }
                 throw std::runtime_error("invalid mode: " + std::string(arg));
@@ -98,6 +95,14 @@ namespace tinytp {
                                                        modulePrio ? PrioGranularity::MODULE : PrioGranularity::SUITE});
     }
 
+    std::unique_ptr<TinyTPRunner> parse(int argc, char *argv[]) {
+        if (argc < 2 || argc > 64) {
+            throw std::runtime_error("invalid number of command line arguments");
+        }
+        const std::vector<std::string_view> args(argv + 1, argv + argc);
+        return parse(args);
+    }
+
     void printHelpMessage(const char *message) {
         std::cerr << "tinytp: " << message << "\n\n";
         std::cerr << "Usage: tinytp [OPTIONS] COMMAND\n\n";
@@ -105,9 +110,9 @@ namespace tinytp {
         std::cerr << "Options:\n";
         std::cerr << "\t--db string \t\tPath to TinyTP database (default: tinytp.db)\n";
         std::cerr << "\t--output string\t\tDirectory where to put any output (except database) (default: current)\n";
-        std::cerr << "\t--changes string\t\tPath to file containing files in changeset (default: changeset.txt)\n";
-        std::cerr << "\t--jenkins string\t\tPath to Jenkins JSON report (default: test-report.json)\n";
-        std::cerr << "\t--module string\t\tPrioritize at test module level\n";
+        std::cerr << "\t--changes string\tPath to file containing files in changeset (default: changeset.txt)\n";
+        std::cerr << "\t--jenkins string\tPath to Jenkins JSON report (default: test-report.json)\n";
+        std::cerr << "\t--module\t\tPrioritize at test module level\n";
         std::cerr << '\n';
         std::cerr << "Commands:\n";
         std::cerr << "\tcollect\t\tCollect data and store into TinyTP database\n";

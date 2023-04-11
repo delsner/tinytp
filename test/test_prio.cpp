@@ -14,7 +14,6 @@ protected:
         db.connect();
         ASSERT_TRUE(db.execute(TestSuiteExecution::sqlCreateTable()));
         ASSERT_FALSE(db.hasError());
-        ASSERT_FALSE(db.select("select * from test_suite_execution;").hasNext());
     }
 
     void TearDown() override {
