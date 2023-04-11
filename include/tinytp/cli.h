@@ -2,6 +2,8 @@
 #define TINYTP_CLI_H
 
 #include <tinytp/runner.h>
+#include <vector>
+#include <string>
 
 namespace tinytp {
 
