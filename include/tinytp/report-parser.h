@@ -2,20 +2,27 @@
 #define TINYTP_REPORT_PARSER_H
 
 #include <filesystem>
+#include <utility>
 #include <vector>
 #include <tinytp/model.h>
 
-namespace tinytp {
-    namespace fs = std::filesystem;
+namespace fs = std::filesystem;
 
-    class BaseReportParser {
+namespace tinytp {
+
+    class ReportParser {
     public:
-        virtual std::vector<TestExecution> parse() = 0;
+        virtual ~ReportParser() = default;
+
+        virtual std::vector<TestSuiteExecution> parse() = 0;
     };
 
-    class JUnitParser: public BaseReportParser {
+    class JenkinsJsonReportParser : public ReportParser {
     public:
-        std::vector<TestExecution> parse() override;
+        explicit JenkinsJsonReportParser(fs::path reportPath) : reportPath(std::move(reportPath)) {}
+
+        std::vector<TestSuiteExecution> parse() override;
+
     private:
         fs::path reportPath;
     };
