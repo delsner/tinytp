@@ -1,5 +1,4 @@
 #include <sqlite3/sqlite3.h>
-#include <iostream>
 #include <tinytp/db.h>
 
 
@@ -43,11 +42,7 @@ namespace tinytp {
 
     void tinytp::SQLiteDB::disconnect() noexcept {
         if (db) {
-            std::cout << "Disconnecting DB" << std::endl;
-            int rc = sqlite3_close(db);
-            if (rc != SQLITE_OK) {
-                std::cout << "Failed to close DB with RC=" << rc << std::endl;
-            }
+            sqlite3_close(db);
             db = nullptr;
             if (errMsg != nullptr) {
                 sqlite3_free(errMsg);

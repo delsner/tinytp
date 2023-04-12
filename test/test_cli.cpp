@@ -13,7 +13,6 @@ namespace fs = std::filesystem;
 class CliTestSuite : public Test {
 protected:
     void SetUp() override {
-        std::cout << "SetUp" << std::endl;
         outputDir = fs::temp_directory_path();
         dbFile = outputDir / "tp.db";
         if (fs::exists(dbFile)) {
@@ -52,7 +51,6 @@ protected:
     }
 
     void TearDown() override {
-        std::cout << "TearDown" << std::endl;
         fs::remove(testReport);
         fs::remove(dbFile);
         fs::remove(outputDir / "tinytp.prio");
@@ -64,7 +62,6 @@ protected:
 };
 
 TEST_F(CliTestSuite, ParseEndToEnd) {
-    std::cout << "ParseEndToEnd(1)" << std::endl;
     std::unique_ptr<TinyTPRunner> runner;
     // write into db
     std::vector<std::string> argv1;
@@ -78,7 +75,6 @@ TEST_F(CliTestSuite, ParseEndToEnd) {
     runner = parse(args1);
     ASSERT_NE(dynamic_cast<TinyTPCollector *>(runner.get()), nullptr);
     ASSERT_EQ(runner->run(), 0);
-    std::cout << "ParseEndToEnd(2)" << std::endl;
 
     // read from db
     std::vector<std::string> argv2;
@@ -93,5 +89,4 @@ TEST_F(CliTestSuite, ParseEndToEnd) {
     ASSERT_NE(dynamic_cast<TinyTPPrio *>(runner.get()), nullptr);
     ASSERT_EQ(runner->run(), 0);
     ASSERT_TRUE(fs::exists(outputDir / "tinytp.prio"));
-    std::cout << "ParseEndToEnd(3)" << std::endl;
 }

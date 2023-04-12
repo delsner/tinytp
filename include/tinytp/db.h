@@ -4,7 +4,6 @@
 #include <sqlite3/sqlite3.h>
 #include <string>
 #include <utility>
-#include <iostream>
 
 namespace tinytp {
     class SQLiteDB {
@@ -51,7 +50,6 @@ namespace tinytp {
         }
 
         virtual ~SQLiteDB() {
-            std::cout << "Destructing SQLiteDB" << std::endl;
             disconnect();
         }
 
