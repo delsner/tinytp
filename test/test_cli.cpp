@@ -62,28 +62,27 @@ protected:
 };
 
 TEST_F(CliTestSuite, ParseEndToEnd) {
-    std::vector<std::string> argv;
     std::unique_ptr<TinyTPRunner> runner;
     // write into db
-    argv = {{"tinytp"},
-            {"collect"},
-            {"--db"},
-            {dbFile},
-            {"--jenkins"},
-            {testReport}};
-    std::vector<std::string_view> args1{argv.begin() + 1, argv.end()};
+    std::vector<std::string> argv1{{"tinytp"},
+                                   {"collect"},
+                                   {"--db"},
+                                   {dbFile},
+                                   {"--jenkins"},
+                                   {testReport}};
+    std::vector<std::string_view> args1{argv1.begin() + 1, argv1.end()};
     runner = parse(args1);
     ASSERT_NE(dynamic_cast<TinyTPCollector *>(runner.get()), nullptr);
     ASSERT_EQ(runner->run(), 0);
 
     // read from db
-    argv = {{"tinytp"},
-            {"prio"},
-            {"--db"},
-            {dbFile},
-            {"--output"},
-            {outputDir}};
-    std::vector<std::string_view> args2{argv.begin() + 1, argv.end()};
+    std::vector<std::string> argv2{{"tinytp"},
+                                   {"prio"},
+                                   {"--db"},
+                                   {dbFile},
+                                   {"--output"},
+                                   {outputDir}};
+    std::vector<std::string_view> args2{argv2.begin() + 1, argv2.end()};
     runner = parse(args2);
     ASSERT_NE(dynamic_cast<TinyTPPrio *>(runner.get()), nullptr);
     ASSERT_EQ(runner->run(), 0);
