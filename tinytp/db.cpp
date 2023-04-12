@@ -20,7 +20,7 @@ namespace tinytp {
         if (!isConnected()) {
             return false;
         }
-        int rc = sqlite3_exec(db, statement.c_str(), 0, 0, &errMsg);
+        int rc = sqlite3_exec(db, statement.c_str(), nullptr, nullptr, &errMsg);
         if (rc != SQLITE_OK) {
             return false;
         }
@@ -34,6 +34,7 @@ namespace tinytp {
         sqlite3_stmt* stmt;
         int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
         if (rc != SQLITE_OK) {
+            sqlite3_finalize(stmt);
             errMsg = const_cast<char*>(sqlite3_errmsg(db));
             return Row(nullptr);
         }
@@ -42,8 +43,15 @@ namespace tinytp {
 
     void tinytp::SQLiteDB::disconnect() noexcept {
         if (db) {
-            sqlite3_close(db);
+            std::cout << "Disconnecting DB" << std::endl;
+            int rc = sqlite3_close(db);
+            if (rc != SQLITE_OK) {
+                std::cout << "Failed to close DB with RC=" << rc << std::endl;
+            }
             db = nullptr;
+            if (errMsg != nullptr) {
+                sqlite3_free(errMsg);
+            }
             errMsg = nullptr;
         }
     }

@@ -13,7 +13,9 @@ namespace tinytp {
     public:
         explicit TinyTPRunner(const SQLiteDB& db) : db(db) {};
 
-        virtual ~TinyTPRunner() = default;
+        virtual ~TinyTPRunner() {
+            std::cout << "Destructing TinyTPRunner" << std::endl;
+        };
 
         virtual int run() = 0;
 

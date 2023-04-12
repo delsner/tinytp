@@ -4,6 +4,7 @@
 #include <sqlite3/sqlite3.h>
 #include <string>
 #include <utility>
+#include <iostream>
 
 namespace tinytp {
     class SQLiteDB {
@@ -13,6 +14,10 @@ namespace tinytp {
         public:
             explicit Row(sqlite3_stmt *stmt) : stmt(stmt), index(0) {
                 columns = sqlite3_column_count(stmt);
+            }
+
+            virtual ~Row() {
+                sqlite3_finalize(stmt);
             }
 
             template<typename T>
@@ -46,6 +51,7 @@ namespace tinytp {
         }
 
         virtual ~SQLiteDB() {
+            std::cout << "Destructing SQLiteDB" << std::endl;
             disconnect();
         }
 
