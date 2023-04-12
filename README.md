@@ -1,6 +1,8 @@
 # TinyTP
 
+![CI](https://github.com/delsner/tinytp/actions/workflows/build.yml/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/delsner/tinytp/badge.svg)](https://coveralls.io/github/delsner/tinytp)
+
 
 TinyTP is a tiny program for test prioritization.
 
@@ -31,7 +33,7 @@ Options:
 	--output string		Directory where to put any output (except database) (default: current)
 	--changes string	Path to file containing files in changeset (default: changeset.txt)
 	--jenkins string	Path to Jenkins JSON report (default: test-report.json)
-	--module		    Prioritize at test module level
+	--module		Prioritize at test module level
 
 Commands:
 	collect		Collect data and store into TinyTP database
