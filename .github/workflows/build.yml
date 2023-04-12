@@ -38,7 +38,7 @@ jobs:
 
       - name: Test
         run: |
-          ctest -C Debug --test-dir build
+          ctest -C Debug --test-dir build --rerun-failed --output-on-failure
 
       - name: Setup python
         uses: actions/setup-python@v4
