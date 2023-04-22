@@ -48,7 +48,7 @@ prioritization algorithm.
 
 ### Collecting and Storing Test Results
 
-There will be different test report parsers in the future. For now, TinyTP supports only Jenkin's JSON test report format.
+There might be different test report parsers in the future. As of now, TinyTP supports only the Jenkins JSON test report format.
 For the sake of this example, we're going to create a dummy report first:
 ```shell
 # Create sample Jenkins JSON test report
