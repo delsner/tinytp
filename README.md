@@ -136,7 +136,7 @@ cd build
 cmake -DCMAKE_BUILD_TYPE=Debug ..
 # [optional] Change generator and target arch on Windows
 cmake -DCMAKE_BUILD_TYPE=Debug -G "Visual Studio 17 2022" -A x64 ..
-# (2) Build BinaryRTS using generated build system (Win32: MSBuild, Linux/macOS: Unix Makefiles)
+# (2) Build TinyTP using generated build system (Win32: MSBuild, Linux/macOS: Unix Makefiles)
 cmake --build . --config Debug
 ```
 
